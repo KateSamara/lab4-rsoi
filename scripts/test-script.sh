@@ -61,11 +61,15 @@ success
 # stop service
 step 1
 
+sleep 10
+
 # start service
 step 2
 
 # stop service
 step 3
+
+sleep 10
 
 # start service
 step 4
