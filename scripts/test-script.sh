@@ -38,9 +38,9 @@ step() {
 
   printf "=== Step %d: scale %s to %s ===\n" "$step" "$deployment" "$replicas"
 
-  sleep 10
-
   kubectl scale deployment "$deployment" -n "$namespace" --replicas "$replicas" 
+
+  sleep 10
 
   newman run \
     --delay-request=100 \
