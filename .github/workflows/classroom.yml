@@ -145,6 +145,9 @@ jobs:
           cat port-forward.log
           exit 1
 
+      - name: Give rights
+        run: chmod +x ./scripts/test-script.sh
+
       - name: Autograding
         uses: education/autograding@v1
 
