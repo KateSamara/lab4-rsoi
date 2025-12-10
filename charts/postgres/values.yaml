@@ -51,7 +51,7 @@ readinessProbe:
   failureThreshold: 3
   
 initdbScripts:
-  04-create-databases.sql: |
+  01-create-databases.sql: |
     CREATE DATABASE reservations;
     CREATE DATABASE libraries;
     CREATE DATABASE ratings;
