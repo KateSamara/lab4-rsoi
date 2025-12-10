@@ -38,6 +38,8 @@ step() {
 
   printf "=== Step %d: scale %s to %s ===\n" "$step" "$deployment" "$replicas"
 
+  sleep 10
+
   kubectl scale deployment "$deployment" -n "$namespace" --replicas "$replicas" 
 
   newman run \
@@ -61,15 +63,11 @@ success
 # stop service
 step 1
 
-sleep 10
-
 # start service
 step 2
 
 # stop service
 step 3
-
-sleep 10
 
 # start service
 step 4
