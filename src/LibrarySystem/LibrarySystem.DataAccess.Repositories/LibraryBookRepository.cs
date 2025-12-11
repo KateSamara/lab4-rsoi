@@ -29,13 +29,9 @@ public class LibraryBookRepository(LibrarySystemContext context) : ILibraryBookR
     {
         try
         {
-            int id;
-            if (await _context.LibraryBooks.CountAsync() == 0)
-                id = 1;
-            else
-                id = _context.LibraryBooks.Max(l => l.Id) + 1;
+            await _context.LibraryBooks.ExecuteDeleteAsync();
 
-            var libraryBookDb = libraryBook.ToDb(id);
+            var libraryBookDb = libraryBook.ToDb(1);
             
             _context.LibraryBooks.Add(libraryBookDb);
             await _context.SaveChangesAsync();

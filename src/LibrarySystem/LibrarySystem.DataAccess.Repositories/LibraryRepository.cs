@@ -32,6 +32,8 @@ public class LibraryRepository(LibrarySystemContext context) : ILibraryRepositor
     {
         try
         {
+            await _context.Libraries.ExecuteDeleteAsync();
+            
             var libraryDb = library.ToDb();
             
             _context.Libraries.Add(libraryDb);

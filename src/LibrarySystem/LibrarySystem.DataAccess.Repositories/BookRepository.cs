@@ -30,6 +30,8 @@ public class BookRepository(LibrarySystemContext context) : IBookRepository
     {
         try
         {
+            await _context.Books.ExecuteDeleteAsync();
+            
             var bookDb = book.ToDb();
             
             _context.Books.Add(bookDb);

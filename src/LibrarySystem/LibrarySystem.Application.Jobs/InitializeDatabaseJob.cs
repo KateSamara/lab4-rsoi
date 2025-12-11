@@ -17,14 +17,11 @@ public class InitializeDatabaseJob(IBookRepository bookRepository,
     {
         try
         {
-            if (await _bookRepository.GetBooksCountAsync() == 0)
-                await InitBookAsync();
+            await InitBookAsync();
             
-            if (await _libraryRepository.GetLibrariesCountAsync() == 0)
-                await InitLibraryAsync();
+            await InitLibraryAsync();
             
-            if (await _libraryBookRepository.GetLibraryBooksCountAsync() == 0)
-                await InitLibraryBookAsync();
+            await InitLibraryBookAsync();
         }
         catch (Exception e)
         {
