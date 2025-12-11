@@ -33,5 +33,5 @@ readinessProbe:
     port: 8080
   initialDelaySeconds: 10
   periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
+  timeoutSeconds: 3
+  failureThreshold: 4

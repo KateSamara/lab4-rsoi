@@ -95,6 +95,8 @@ public class LibraryRepository(LibrarySystemContext context) : ILibraryRepositor
                 .Take(bookRequest.Size)
                 .ToListAsync();
 
+            Console.WriteLine(totalElements);
+            
             return new BookPaged
             {
                 Page = bookRequest.Page,
