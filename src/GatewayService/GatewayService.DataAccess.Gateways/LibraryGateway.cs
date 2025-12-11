@@ -83,6 +83,7 @@ public class LibraryGateway(IOptions<LibrarySystemConfiguration> librarySystemCo
             var json = await response.Content.ReadAsStringAsync();
         
             var booksPaged = JsonSerializer.Deserialize<BookPagedDto>(json);
+            Console.WriteLine($"{booksPaged?.TotalItems}");
 
             return booksPaged!.ToDomain();
         }
