@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using GatewayService.DataAccess.Gateways.CircuitBreakers;
 using GatewayService.DataAccess.Gateways.Configuration;
 using GatewayService.DataAccess.Models.Converters;
 using GatewayService.DataAccess.Models.Reservations;
@@ -11,9 +12,11 @@ using Microsoft.Extensions.Options;
 
 namespace GatewayService.DataAccess.Gateways;
 
-public class ReservationGateway(IOptions<ReservationSystemConfiguration> reservationSystemConfiguration) : IReservationGateway
+public class ReservationGateway(IOptions<ReservationSystemConfiguration> reservationSystemConfiguration,
+    CircuitBreaker<ReservationGateway> circuitBreaker) : IReservationGateway
 {
     private readonly ReservationSystemConfiguration _reservationSystemConfiguration = reservationSystemConfiguration.Value ?? throw new ArgumentNullException(nameof(reservationSystemConfiguration));
+    private readonly CircuitBreaker<ReservationGateway> _reservationCircuitBreaker = circuitBreaker ?? throw new ArgumentNullException(nameof(circuitBreaker));
     
     public async Task<int> GetCurrentReservationsCountByUsernameAsync(string username)
     {
@@ -70,15 +73,15 @@ public class ReservationGateway(IOptions<ReservationSystemConfiguration> reserva
 
     public async Task<List<ReservationShort>> GetReservationsByUsernameAsync(string username)
     {
-        try
-        {
-            return await CallGetReservationsByUsernameAsync(username);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Reservation service is unavailable.");
-            throw new ReservationServiceNotAvailableGatewayException("Reservation service is unavailable.");
-        }
+        return await _reservationCircuitBreaker.ExecuteAsync(
+            action: async () => await CallGetReservationsByUsernameAsync(username),
+            fallbackAction: () =>
+            {
+                Console.WriteLine("Reservation service is unavailable.");
+                throw new ReservationServiceNotAvailableGatewayException("Reservation service is unavailable.");
+            },
+            checkHealthAction: async () => await IsReservationServiceAvailableAsync()
+        );
     }
 
     private async Task<List<ReservationShort>> CallGetReservationsByUsernameAsync(string username)
